@@ -1,0 +1,58 @@
+﻿<Window x:Class="WpfApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:WpfApp.Utils.Converters"
+        xmlns:local="clr-namespace:WpfApp"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="300" Width="600">
+    <DockPanel>
+        <DockPanel.Resources>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        </DockPanel.Resources>
+        <Button DockPanel.Dock="Top" Command="{Binding Exit}" HorizontalAlignment="Right" Content="X" Background="Red">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" x:Name="borderd">
+                        <TextBlock Text="{TemplateBinding Content}" Foreground="White" FontSize="14" Padding="10,5"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="borderd" Property="Background" Value="DarkRed"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+
+        <StackPanel Orientation="Vertical" Margin="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+          
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10">
+                <TextBlock FontSize="20" VerticalAlignment="Center" Text="Numeric Money: " Margin="10,0"/>
+                <TextBox FontSize="20" Text="{Binding OriginalMoney,UpdateSourceTrigger=PropertyChanged}" TextAlignment="Right" VerticalAlignment="Center" Width="120"  Margin="5,0">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Background" Value="WhiteSmoke"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsMoneyValidNumber}" Value="False">
+                                    <Setter Property="Background" Value="WhiteSmoke"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+                <TextBlock FontSize="20" VerticalAlignment="Center" Text="$" Margin="0,0,20,0"/>
+                <Button FontSize="20" Content="Send" Command="{Binding Send}" VerticalAlignment="Center" Padding="10,0"  Visibility="{Binding IsInProgress, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                <Button FontSize="20" Content="Cancel" Command="{Binding Cancel}" VerticalAlignment="Center" Padding="10,0"  Visibility="{Binding IsInProgress, Converter={StaticResource BoolToVisibilityConverter}}" />
+            </StackPanel>
+
+            <TextBlock FontSize="18" VerticalAlignment="Center" Text="{Binding ConversionResultStatusMessage}" Margin="10" HorizontalAlignment="Center" TextWrapping="Wrap" />
+            <TextBlock FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding ConvertedMoney}" Margin="10,0"/>
+        </StackPanel>
+    </DockPanel>
+   
+</Window>
